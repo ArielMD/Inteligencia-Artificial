@@ -53,6 +53,26 @@ streamlit run ui/streamlit_app.py --server.port 8501
 
 Abre `http://localhost:8501` y verifica la API en `http://localhost:8000/docs`.
 
+## Docker (recomendado)
+
+Requisitos: [Docker](https://docs.docker.com/get-docker/) y Docker Compose v2.
+
+```bash
+cd rag-app
+cp .env.example .env
+# Edita .env y define GOOGLE_API_KEY
+docker compose up --build
+```
+
+| Servicio | URL |
+|----------|-----|
+| UI Streamlit | http://localhost:8501 |
+| API FastAPI | http://localhost:8000/docs |
+
+**Persistencia:** el índice Chroma vive en el volumen Docker `chroma_data`; los documentos en `./data` y los chats en `./chats` se montan desde tu carpeta del proyecto (siguen ahí al hacer `docker compose down`).
+
+La UI dentro de Docker usa `API_BASE_URL=http://api:8000` (red interna). No cambies eso en `.env` para desarrollo local con venv; Compose lo sobreescribe solo en el contenedor `ui`.
+
 ## Preparar tu corpus
 
 1. - Existe archivos en la carpeta `/data` donde se encuentra PDFs de temarios para diferentes maestrias de la UADY y 2 markdown sobre el tema de python.
@@ -109,4 +129,5 @@ Los chats se guardan en `chats/` a través de FastAPI. Recargar Streamlit o rein
 
 Ejemplo:
 
+### Chat
 ![alt text](./imagenes/image.png)

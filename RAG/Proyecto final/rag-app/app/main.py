@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import uuid
 from datetime import datetime, timezone
 from typing import Any, Optional
@@ -49,12 +50,17 @@ def on_startup() -> None:
     settings = reload_settings()
     logger.info("Gemini model: %s | Embedding: %s", settings.gemini_model, settings.embedding_model)
 
+def _cors_origins() -> list[str]:
+    raw = os.getenv(
+        "CORS_ORIGINS",
+        "http://localhost:8501,http://127.0.0.1:8501",
+    )
+    return [origin.strip() for origin in raw.split(",") if origin.strip()]
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:8501",
-        "http://127.0.0.1:8501",
-    ],
+    allow_origins=_cors_origins(),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
